@@ -2,7 +2,7 @@ if [ "$1" == "clean" ]; then
     # Clean up
     rm qmk_firmware/*.bin
     rm *.bin
-elif [ "$1" == "restore"] then
+elif [ "$1" == "restore" ]; then
     # Restore the old firmware
     if [ -f firmware.bin.bak ]; then
         mv firmware.bin.bak firmware.bin
@@ -16,6 +16,11 @@ elif [ "$1" == "flash" ]; then
     else
         echo "No firmware to flash"
     fi
+elif [ "$1" == "generate" ]; then
+    # Generate keymap.c
+    cd keymap/
+    qmk json2c *.json -o keymap.c
+    cd ..
 else
     # Backup the old firmware
     if [ -f firmware.bin ]; then
@@ -32,13 +37,17 @@ else
     cp -r ../keymap/* ./keyboards/planck/keymaps/lamdv
 
     # Compile the firmware
+    echo "qmk compile -kb planck/rev6 -km lamdv" $*
+    echo "\n-------------------\n"
     qmk compile -kb planck/rev6 -km lamdv $*
 
     # Move the firmware to the root directory
-    if [ ! -f planck_rev6_lamdv.bin ]; then
-        exit 1
-    else
+    if [ -f planck_rev6_lamdv.bin ]; then
         mv planck_rev6_lamdv.bin ../firmware.bin
+    elif [ -f *.bin ]; then
+        mv *.bin ../
+    else
+        echo "No firmware to move"
     fi
 
     # Clean up
