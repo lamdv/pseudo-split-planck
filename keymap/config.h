@@ -48,4 +48,5 @@
 // Most tactile encoders have detents every 4 stages
 #define ENCODER_RESOLUTION 4
 
+// Change the Tap toogle to navigate layers to double tap (from 5 taps)
 #define TAPPING_TOGGLE 2
