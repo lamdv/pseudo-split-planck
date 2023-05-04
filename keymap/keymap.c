@@ -18,6 +18,7 @@
 
 
 #define _LAYER0 0
+#define _LAYER1 1
 #define _LAYER2 2
 
 enum custom_keycodes {

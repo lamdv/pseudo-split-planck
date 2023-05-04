@@ -1,0 +1,1 @@
+# A quasi-splitted, pseudo-staggered Planck keyboard layout
