@@ -47,17 +47,17 @@ down by one key. This is to make the layout more comfortable for my hands. You
 might have longer pinky fingers, but even compare to other Asian, my pinky is
 quite on the short side.
 
-The 1st layer is just rows of function keys, numbers and symbols in that order. 
-Nothing to see here, move along. You can get to this layer by holding the `1`
-key, or by tapping the `1` then follow up with the corresponding symbol/function
-key.
-
-The 2nd layer is a navigation layer. It is intended to cover most navigation
+The 1st layer is a navigation layer. It is intended to cover most navigation
 needs without using a mouse. The arrow keys are on the WASD keys as it is
 conventionally done in games. Mouse controls are on the right hand on IJKL, and
 you should find it  easily. Alt-tab and Command-tab are also on available in the
 same spot as the default layer. You can get to this layer by holding the `2`
 key, or by tapping the `2` key twice.
+
+The 2nd layer is just rows of function keys, numbers and symbols in that order. 
+Nothing to see here, move along. You can get to this layer by holding the `1`
+key, or by tapping the `1` then follow up with the corresponding symbol/function
+key.
 
 ## TODO
 
