@@ -11,6 +11,9 @@ jobs:
 # List of keymap json files to build
         file:
         - username.json
+        keyboard:
+          - planck/rev6
+        
 # End of json file list
 
     steps:
@@ -30,7 +33,7 @@ jobs:
         path: users/${{ github.actor }}
 
     - name: Build firmware
-      run: qmk compile
+      run: ./build.sh 
 
     - name: Archive firmware
       uses: actions/upload-artifact@v3
