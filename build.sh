@@ -18,8 +18,8 @@ elif [ "$1" == "flash" ]; then
     fi
 elif [ "$1" == "generate" ]; then
     # Generate keymap.c
-    cd keymap/
-    qmk json2c *.json -o keymap.c
+    cd qmk_firmware/
+    qmk json2c ../keymap/*.json -o ../keymap/keymap.c
     cd ..
 else
     # Backup the old firmware

@@ -7,10 +7,39 @@
  * edit it directly.
  */
 
+const rgblight_segment_t PROGMEM my_first_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+	{0, 9, HSV_BLUE}
+);
+
+const rgblight_segment_t PROGMEM my_second_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+	{0, 9, HSV_GREEN}
+);
+
+const rgblight_segment_t PROGMEM my_third_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+	{0, 9, HSV_BLUE}
+);
+
+const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+	my_first_layer,
+	my_second_layer,
+	my_third_layer
+);
+
+void keyboard_post_init_user(void) {
+	rgblight_layers = my_first_layer;
+	// rgblight_set_layer_state(0, get_highest_layer(layer_state)==0);
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+	rgblight_set_layer_state(0, layer_state_cmp(state, 0));
+	rgblight_set_layer_state(1, layer_state_cmp(state, 1));
+	rgblight_set_layer_state(2, layer_state_cmp(state, 2));
+}
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[0] = LAYOUT_planck_1x2uC(KC_Q, KC_W, KC_E, KC_R, KC_T, QK_GESC, KC_QUOT, KC_Y, KC_U, KC_I, KC_O, KC_BSPC, KC_A, KC_S, KC_D, KC_F, KC_G, KC_TAB, KC_PGUP, KC_H, KC_J, KC_K, KC_L, KC_P, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_DEL, KC_PGDN, KC_N, KC_M, KC_COMM, KC_DOT, KC_SCLN, KC_NO, KC_LSFT, KC_LALT, TT(2), KC_SPC, LGUI_T(KC_LCTL), SC_SENT, OSL(1), KC_BSLS, KC_SLSH, KC_NO),
-	[1] = LAYOUT_planck_1x2uC(KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_1, KC_2, KC_3, KC_4, KC_5, KC_MINS, KC_EQL, KC_6, KC_7, KC_8, KC_9, KC_0, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_UNDS, KC_PLUS, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_NO, KC_RSFT, KC_RALT, KC_RCTL, KC_TRNS, KC_RGUI, KC_TRNS, KC_TRNS, KC_LBRC, KC_RBRC, KC_NO),
-	[2] = LAYOUT_planck_1x2uC(KC_NO, KC_UP, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_WH_U, KC_MS_U, KC_PGUP, KC_BSPC, KC_LEFT, KC_DOWN, KC_RGHT, KC_NO, KC_NO, KC_TRNS, KC_NO, KC_BTN2, KC_MS_L, KC_MS_D, KC_MS_R, KC_ENT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_BTN3, KC_WH_D, KC_FIND, KC_PGDN, KC_RSFT, KC_NO, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_BTN1, KC_NO, KC_VOLD, KC_VOLU, KC_NO)
+	[0] = LAYOUT_planck_1x2uC(KC_Q, KC_W, KC_E, KC_R, KC_T, KC_ESC, KC_PGUP, KC_Y, KC_U, KC_I, KC_O, KC_BSPC, KC_A, KC_S, KC_D, KC_F, KC_G, KC_TAB, KC_PGDN, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_GRV, KC_QUOT, KC_N, KC_M, KC_COMM, KC_DOT, KC_P, KC_NO, CW_TOGG, KC_LALT, TT(1), KC_SPC, LCTL_T(KC_LGUI), SC_SENT, OSL(2), KC_BSLS, KC_SLSH, KC_NO),
+	[1] = LAYOUT_planck_1x2uC(RGB_TOG, KC_PGUP, KC_UP, KC_PGDN, RGB_HUD, RGB_HUI, KC_NO, KC_NO, KC_WH_U, KC_MS_U, KC_BTN2, KC_BSPC, KC_AGIN, KC_LEFT, KC_DOWN, KC_RGHT, KC_NO, KC_TRNS, KC_HOME, KC_BTN3, KC_MS_L, KC_MS_D, KC_MS_R, KC_ENT, KC_UNDO, KC_CUT, KC_COPY, KC_PSTE, KC_NO, KC_DEL, KC_END, KC_NO, KC_WH_D, KC_WH_L, KC_WH_R, KC_RSFT, KC_NO, KC_TRNS, KC_TRNS, TO(0), KC_TRNS, KC_TRNS, KC_BTN1, MO(2), KC_VOLD, KC_VOLU, KC_NO),
+	[2] = LAYOUT_planck_1x2uC(KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12, KC_1, KC_2, KC_3, KC_4, KC_5, KC_MINS, KC_EQL, KC_6, KC_7, KC_8, KC_9, KC_0, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_UNDS, KC_PLUS, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_NO, KC_RSFT, KC_RALT, TG(1), KC_TRNS, KC_TRNS, SC_SENT, KC_TRNS, KC_LBRC, KC_RBRC, KC_NO)
 };
 
 #if defined(ENCODER_ENABLE) && defined(ENCODER_MAP_ENABLE)
@@ -18,7 +47,3 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 
 };
 #endif // defined(ENCODER_ENABLE) && defined(ENCODER_MAP_ENABLE)
-
-
-
-
