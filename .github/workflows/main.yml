@@ -30,7 +30,7 @@ jobs:
         path: users/${{ github.actor }}
 
     - name: Build firmware
-      run: cd keymap && qmk compile
+      run: qmk compile
 
     - name: Archive firmware
       uses: actions/upload-artifact@v3
