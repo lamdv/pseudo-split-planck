@@ -37,8 +37,7 @@ else
     cp -r ../keymap/* ./keyboards/planck/keymaps/lamdv
 
     # Compile the firmware
-    echo "qmk compile -kb planck/rev6_drop -km lamdv" $*
-    echo "\n-------------------\n"
+    echo "Compiling the firmware with settings: $*"
     qmk compile -kb planck/rev6 -km lamdv $*
 
     # Move the firmware to the root directory

@@ -24,10 +24,13 @@
         { SONG(QWERTY_SOUND), SONG(COLEMAK_SOUND), SONG(DVORAK_SOUND) }
 #endif
 
-
-#define RGBLIGHT_LAYERS
-
-
+#ifdef RGBLIGHT_ENABLE
+    #define RGBLIGHT_SLEEP /* If defined, the RGB lighting will be switched off when the host goes to sleep */
+    #define RGBLIGHT_LAYERS
+    #define RGBLIGHT_MAX_LAYERS 4
+    #define RGBLIGHT_LAYERS_OVERRIDE_RGB_OFF
+    #define RGBLIGHT_LAYERS_OVERRIDE_VAL
+#endif
 /*
  * MIDI options
  */
