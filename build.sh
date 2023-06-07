@@ -35,6 +35,7 @@ else
     # Put the keymap in the right place
     mkdir -p keyboards/planck/keymaps/lamdv
     cp -r ../keymap/* ./keyboards/planck/keymaps/lamdv
+    rm keyboards/planck/keymaps/lamdv/*.json
 
     # Compile the firmware
     echo "Compiling the firmware with settings: $*"

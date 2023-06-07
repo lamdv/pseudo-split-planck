@@ -57,3 +57,7 @@
 
 // Change the Tap toogle to navigate layers to double tap (from 5 taps)
 #define TAPPING_TOGGLE 2
+#define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD 
+#define TAPPING_TERM 200
+#define TAPPING_TERM_PER_KEY
+#define IGNORE_MOD_TAP_INTERRUPT
