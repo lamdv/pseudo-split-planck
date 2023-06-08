@@ -65,30 +65,30 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
  */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[0] = LAYOUT_planck_1x2uC(
-        TD(TD_Q_ESC),        KC_W,  KC_E,    KC_R,       KC_T,        KC_NO,KC_NO,  KC_Y,     KC_U,     KC_I,    KC_O,    KC_BSPC, 
-                KC_A,        KC_S,  HOME_D,  HOME_F,     KC_G,        KC_NO,KC_NO,  KC_H,    HOME_J,   HOME_K ,  KC_L,    KC_P, 
-                LT(1, KC_Z), KC_X,  KC_C,    KC_V,       KC_B,        KC_NO,KC_NO,  KC_N,     KC_M,    KC_COMM, KC_DOT, LT(1, KC_SCLN), 
-        KC_NO, KC_NO, KC_NO,      KC_LSFT, TD(TD_SPC_TAB),  KC_NO,    OSL(2), OSM(MOD_RCTL),
+	[0] = LAYOUT_planck_2x2u(
+        TD(TD_Q_ESC),        KC_W,  KC_E,    KC_R,       KC_T,        KC_NO,KC_NO,  KC_Y,     KC_U,     KC_I,    KC_O,    KC_SLSH, 
+                LT(1,KC_A),        KC_S,  HOME_D,  HOME_F,     KC_G,        KC_NO,KC_NO,  KC_H,    HOME_J,   HOME_K ,  KC_L,    KC_P, 
+                KC_Z, KC_X,  KC_C,    KC_V,       KC_B,        KC_NO,KC_NO,  KC_N,     KC_M,    KC_COMM, KC_DOT, LT(1, KC_SCLN), 
+        KC_NO, KC_NO, KC_NO,        OSM(MOD_LSFT),     TD(TD_SPC_TAB),                   OSL(3), OSM(MOD_RCTL),
         KC_NO, KC_NO, KC_NO),
-	[1] = LAYOUT_planck_1x2uC(
-        RGB_TOG,    TD(TD_HOME), KC_UP,      TD(TD_END), RGB_RMOD, KC_NO,KC_NO,    CW_TOGG   , KC_WH_U, KC_MS_U, KC_BTN3, KC_BSPC, 
+	[1] = LAYOUT_planck_2x2u(
+        RGB_TOG,    TD(TD_HOME), KC_UP,      TD(TD_END), RGB_RMOD, KC_NO,KC_NO,    CW_TOGG   , KC_WH_U, KC_MS_U, KC_BTN3, KC_DEL, 
         LCTL(KC_Y), KC_LEFT,     KC_DOWN,    KC_RGHT,    RGB_HUI,  KC_NO,KC_NO,    KC_ACL2   , KC_MS_L, KC_MS_D, KC_MS_R, KC_ENT, 
-        KC_NO, LCTL(KC_X),  LCTL(KC_C), LCTL(KC_V), RGB_HUD,  KC_NO,KC_NO,     KC_NO    , KC_WH_D, KC_WH_L, KC_WH_R, KC_TRNS,
-        KC_NO,KC_NO,KC_NO ,                   KC_LSFT,   TO(0),       KC_NO   ,    KC_BTN1   , KC_BTN2,
+        KC_NO, LCTL(KC_X),  LCTL(KC_C),     LCTL(KC_V),  RGB_HUD,  KC_NO,KC_NO,     KC_NO    , KC_WH_D, KC_WH_L, KC_WH_R, KC_TRNS,
+        KC_NO,KC_NO,KC_NO ,           KC_LALT,  TO(0),                      KC_BTN1   , KC_BTN2,
         KC_NO, KC_NO, KC_NO),
-	// [3] = LAYOUT_planck_1x2uC(
-    //      , , , , , KC_NO,KC_NO, , , , , ,
-    //      , , , , , KC_NO,KC_NO, , , , , ,    
-    //      , , , , , KC_NO,KC_NO, , , , , ,
-    //      , , , , , KC_NO,KC_NO, , , , , ,   //      ),
-	[2] = LAYOUT_planck_1x2uC(
-        KC_ESC,KC_VOLD, KC_VOLU, KC_MPLY,       KC_UNDS, KC_NO,KC_NO, KC_7,  KC_8,  KC_9, KC_0,    KC_DEL, 
-        KC_TAB, KC_LBRC,KC_LCBR, KC_QUOT,       KC_PLUS, KC_NO,KC_NO, KC_4,  KC_5,  KC_6, KC_MINS, KC_ENT,
-        TO(1), KC_RBRC,KC_RCBR, KC_SLSH,      KC_BSLS, KC_NO,KC_NO, KC_1,  KC_2,  KC_3, KC_EQL,  TO(1),
-        KC_NO , KC_NO, KC_NO   , KC_LSFT,  TO(0),     KC_NO   , TO(2), KC_RCTL,
+	[2] = LAYOUT_planck_2x2u(
+        KC_ESC,KC_VOLD, KC_VOLU, KC_MPLY,      KC_UNDS, KC_NO,KC_NO, KC_7,  KC_8,  KC_9, KC_0,    KC_BSPC, 
+        KC_TAB, KC_LBRC,KC_LCBR, KC_QUOT,      KC_PLUS, KC_NO,KC_NO, KC_4,  KC_5,  KC_6, KC_MINS, KC_ENT,
+        KC_DEL, KC_RBRC,KC_RCBR, KC_SLSH,      KC_BSLS, KC_NO,KC_NO, KC_1,  KC_2,  KC_3, KC_EQL,  TO(1),
+        KC_NO , KC_NO, KC_NO, OSM(MOD_LSFT),    TO(0),              TO(3), KC_RCTL,
         KC_NO, KC_NO, KC_NO),
-
+	[3] = LAYOUT_planck_2x2u(
+        KC_ESC, KC_AT  , KC_HASH, KC_DLR,       KC_PERC, KC_NO,KC_NO, KC_CIRC,  KC_AMPR,  KC_ASTR, KC_BSLS, KC_BSPC, 
+        KC_TAB, KC_EXLM, KC_GRAVE, KC_DQT, KC_QUOT, KC_NO,KC_NO, KC_LBRC,KC_RBRC ,  KC_LPRN, KC_RPRN, KC_ENT,
+        KC_DEL, KC_UNDS, KC_MINUS, KC_PLUS, KC_EQUAL,  KC_NO,KC_NO, KC_LCBR,KC_RCBR ,   KC_LT, KC_GT,  TO(1),
+        KC_NO , KC_NO, KC_NO,  KC_LALT ,  TO(0),                     TO(2), KC_RCTL,
+        KC_NO, KC_NO, KC_NO)
 };
 
 #if defined(ENCODER_ENABLE) && defined(ENCODER_MAP_ENABLE)
