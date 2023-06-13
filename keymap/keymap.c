@@ -11,6 +11,43 @@
 #define HOME_L RCTL_T(KC_L)
 #define HOME_P RSFT_T(KC_P)
 
+typedef struct {
+    uint16_t tap;
+    uint16_t hold;
+    uint16_t held;
+} tap_dance_tap_hold_t;
+
+
+void tap_dance_tap_hold_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+
+    if (state->pressed) {
+        if (state->count == 1
+#ifndef PERMISSIVE_HOLD
+            && !state->interrupted
+#endif
+        ) {
+            register_code16(tap_hold->hold);
+            tap_hold->held = tap_hold->hold;
+        } else {
+            register_code16(tap_hold->tap);
+            tap_hold->held = tap_hold->tap;
+        }
+    }
+}
+
+void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+
+    if (tap_hold->held) {
+        unregister_code16(tap_hold->held);
+        tap_hold->held = 0;
+    }
+}
+
+
+#define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) \
+    { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
 enum {
     TD_SPC_TAB,
@@ -22,6 +59,13 @@ enum {
     TD_QUOTE_GRAVE
 };
 
+enum planck_layers {
+    _QWERTY,
+    _NUMBER,
+    _SYMBOL,
+    _NAV
+};
+
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Escape, twice for Caps Lock
@@ -30,33 +74,39 @@ tap_dance_action_t tap_dance_actions[] = {
     [TD_QUOTE_GRAVE] = ACTION_TAP_DANCE_DOUBLE(KC_QUOT, KC_GRV),
     [TD_LCURLY] = ACTION_TAP_DANCE_DOUBLE(KC_LBRC, KC_LCBR),
     [TD_RCURLY] = ACTION_TAP_DANCE_DOUBLE(KC_RBRC, KC_RCBR),
-    [TD_HOME] = ACTION_TAP_DANCE_DOUBLE(KC_HOME, KC_PGUP),
-    [TD_END] = ACTION_TAP_DANCE_DOUBLE(KC_END, KC_PGDN),
+    [TD_HOME] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, KC_HOME),
+    [TD_END] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, KC_END),
     
     }; 
 
 
-const rgblight_segment_t PROGMEM my_layer1_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 9, HSV_CYAN}
-);
-// Light LEDs 11 & 12 in purple when keyboard layer 2 is active
-const rgblight_segment_t PROGMEM my_layer2_layer[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 9, HSV_GREEN}
-);
 
-const rgblight_segment_t* const PROGMEM my_rgb_layers[] = RGBLIGHT_LAYERS_LIST(
-    my_layer1_layer,
-    my_layer2_layer
-);
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    tap_dance_action_t *action;
 
-void keyboard_post_init_user(void) {
-    // Enable the LED layers
-    rgblight_layers = my_rgb_layers;
+    switch (keycode) {
+        case TD(TD_HOME):
+        case TD(TD_END):  // list all tap dance keycodes with tap-hold configurations
+            action = &tap_dance_actions[TD_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            return true;
+        default:
+            return true;
+    }
+
 }
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-
+    switch (keycode) {
+        case TD(TD_HOME):
+        case TD(TD_END):
+            return 500;
+        default:
             return 250;
+    }
 }
 /* THIS FILE WAS GENERATED!
  *
@@ -65,29 +115,29 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
  */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[0] = LAYOUT_planck_2x2u(
+	[_QWERTY] = LAYOUT_planck_2x2u(
         TD(TD_Q_ESC),        KC_W,  KC_E,    KC_R,       KC_T,        KC_NO,KC_NO,  KC_Y,     KC_U,     KC_I,    KC_O,    KC_SLSH, 
-                LT(1,KC_A),        KC_S,  HOME_D,  HOME_F,     KC_G,        KC_NO,KC_NO,  KC_H,    HOME_J,   HOME_K ,  KC_L,    KC_P, 
-                KC_Z, KC_X,  KC_C,    KC_V,       KC_B,        KC_NO,KC_NO,  KC_N,     KC_M,    KC_COMM, KC_DOT, LT(1, KC_SCLN), 
-        KC_NO, KC_NO, KC_NO,        OSM(MOD_LSFT),     TD(TD_SPC_TAB),                   OSL(3), OSM(MOD_RCTL),
+                LT(_NAV,KC_A),        KC_S,  HOME_D,  HOME_F,     KC_G,        KC_NO,KC_NO,  KC_H,    HOME_J,   HOME_K ,  KC_L,    KC_P, 
+                KC_Z, KC_X,  KC_C,    KC_V,       KC_B,        KC_NO,KC_NO,  KC_N,     KC_M,    KC_COMM, KC_DOT, LT(_NAV, KC_SCLN), 
+        KC_NO, KC_NO, KC_NO,        OSM(MOD_LSFT),     TD(TD_SPC_TAB),                   OSL(_SYMBOL), OSM(MOD_RCTL),
         KC_NO, KC_NO, KC_NO),
-	[1] = LAYOUT_planck_2x2u(
+	[_NAV] = LAYOUT_planck_2x2u(
         RGB_TOG,    TD(TD_HOME), KC_UP,      TD(TD_END), RGB_RMOD, KC_NO,KC_NO,    CW_TOGG   , KC_WH_U, KC_MS_U, KC_BTN3, KC_DEL, 
-        LCTL(KC_Y), KC_LEFT,     KC_DOWN,    KC_RGHT,    RGB_HUI,  KC_NO,KC_NO,    KC_ACL2   , KC_MS_L, KC_MS_D, KC_MS_R, KC_ENT, 
-        KC_NO, LCTL(KC_X),  LCTL(KC_C),     LCTL(KC_V),  RGB_HUD,  KC_NO,KC_NO,     KC_NO    , KC_WH_D, KC_WH_L, KC_WH_R, KC_TRNS,
-        KC_NO,KC_NO,KC_NO ,           KC_LALT,  TO(0),                      KC_BTN1   , KC_BTN2,
+        OSM(MOD_LALT), KC_LEFT,     KC_DOWN,    KC_RGHT,    RGB_HUI,  KC_NO,KC_NO,    KC_ACL2   , KC_MS_L, KC_MS_D, KC_MS_R, KC_ENT ,
+        OSM(MOD_LCTL), LCTL(KC_X),  LCTL(KC_C),     LCTL(KC_V),  RGB_HUD,  KC_NO,KC_NO,     KC_NO    , KC_WH_D, KC_WH_L, KC_WH_R, OSL(_SYMBOL),
+        KC_NO,KC_NO,KC_NO ,           OSM(MOD_LSFT),  TO(_QWERTY),                      KC_BTN1   , KC_BTN2,
         KC_NO, KC_NO, KC_NO),
-	[2] = LAYOUT_planck_2x2u(
-        KC_ESC,KC_VOLD, KC_VOLU, KC_MPLY,      KC_UNDS, KC_NO,KC_NO, KC_7,  KC_8,  KC_9, KC_0,    KC_BSPC, 
-        KC_TAB, KC_LBRC,KC_LCBR, KC_QUOT,      KC_PLUS, KC_NO,KC_NO, KC_4,  KC_5,  KC_6, KC_MINS, KC_ENT,
-        KC_DEL, KC_RBRC,KC_RCBR, KC_SLSH,      KC_BSLS, KC_NO,KC_NO, KC_1,  KC_2,  KC_3, KC_EQL,  TO(1),
-        KC_NO , KC_NO, KC_NO, OSM(MOD_LSFT),    TO(0),              TO(3), KC_RCTL,
+	[_NUMBER] = LAYOUT_planck_2x2u(
+        KC_ESC, KC_F1, KC_F2, KC_F3,  KC_F4,  KC_NO,KC_NO, KC_7,  KC_8,  KC_9, KC_0,    KC_BSPC, 
+        KC_TAB, KC_F5,KC_F6 , KC_F7,  KC_F8,  KC_NO,KC_NO, KC_4,  KC_5,  KC_6, KC_COMM, KC_ENT,
+        KC_DEL, KC_F9,KC_F10, KC_F11, KC_F12, KC_NO,KC_NO, KC_1,  KC_2,  KC_3, KC_DOT,  TO(_NAV),
+        KC_NO , KC_NO, KC_NO, KC_LALT,    TO(_QWERTY),              TO(_SYMBOL), KC_RCTL,
         KC_NO, KC_NO, KC_NO),
-	[3] = LAYOUT_planck_2x2u(
+	[_SYMBOL] = LAYOUT_planck_2x2u(
         KC_ESC, KC_AT  , KC_HASH, KC_DLR,       KC_PERC, KC_NO,KC_NO, KC_CIRC,  KC_AMPR,  KC_ASTR, KC_BSLS, KC_BSPC, 
         KC_TAB, KC_EXLM, KC_GRAVE, KC_DQT, KC_QUOT, KC_NO,KC_NO, KC_LBRC,KC_RBRC ,  KC_LPRN, KC_RPRN, KC_ENT,
-        KC_DEL, KC_UNDS, KC_MINUS, KC_PLUS, KC_EQUAL,  KC_NO,KC_NO, KC_LCBR,KC_RCBR ,   KC_LT, KC_GT,  TO(1),
-        KC_NO , KC_NO, KC_NO,  KC_LALT ,  TO(0),                     TO(2), KC_RCTL,
+        KC_DEL, KC_UNDS, KC_MINUS, KC_PLUS, KC_EQUAL,  KC_NO,KC_NO, KC_LCBR,KC_RCBR ,   KC_LT, KC_GT, TO(_NAV),
+        KC_NO , KC_NO, KC_NO,  KC_LALT ,  TO(_QWERTY),                     TO(_NUMBER), KC_RCTL,
         KC_NO, KC_NO, KC_NO)
 };
 
@@ -96,3 +146,57 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 
 };
 #endif // defined(ENCODER_ENABLE) && defined(ENCODER_MAP_ENABLE)
+
+const rgblight_segment_t PROGMEM _QWERTY_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 9, HSV_BLUE}
+);
+const rgblight_segment_t PROGMEM _NUMBER_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 9, HSV_GREEN}
+);
+const rgblight_segment_t PROGMEM _SYMBOL_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 9, HSV_RED}
+);
+const rgblight_segment_t PROGMEM _NAV_layer[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 9, HSV_RED}
+);
+const rgblight_segment_t* const PROGMEM _rgb_layers[] = RGBLIGHT_LAYERS_LIST(
+    _QWERTY_layer, 
+    _NUMBER_layer, 
+    _SYMBOL_layer,
+    _NAV_layer
+);
+
+void keyboard_post_init_user(void) {
+    // Enable the LED layers
+    rgblight_layers = _rgb_layers;
+}
+
+layer_state_t layer_state_set_kb(layer_state_t state) {
+    print("state: ");
+    print(get_highest_layer(state));
+    switch (get_highest_layer(state))
+    {
+    case _QWERTY:
+        // rgblight_set_layer_state(0, 1);
+        rgblight_setrgb(0, 0, 255);
+        break;
+    case _NUMBER:
+        // rgblight_set_layer_state(1, 1);
+        rgblight_setrgb(0, 255, 255);
+        break;
+    case _SYMBOL:
+        // rgblight_set_layer_state(2, 1);
+        rgblight_setrgb(0, 255, 0);
+        break;
+    case _NAV:
+        // rgblight_set_layer_state(3, 1);
+        rgblight_setrgb(255, 0, 0);
+        break;
+    }
+    return state;
+}
+
+layer_state_t default_layer_state_set_kb(layer_state_t state) {
+    rgblight_set_layer_state(0, 1);
+    return state;
+}
